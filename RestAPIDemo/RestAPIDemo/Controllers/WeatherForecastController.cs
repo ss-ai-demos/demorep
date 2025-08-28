@@ -15,7 +15,11 @@ namespace RestAPIDemo.Controllers
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
+        // Replace this line:
+        // const DateTime current_time = DateTime.Now.ToLocalTime()
 
+        // With this line:
+        private static readonly DateTime current_time = DateTime.Now.ToLocalTime();
         private readonly ILogger<WeatherForecastController> _logger;
 
         /// <summary>
@@ -47,7 +51,6 @@ namespace RestAPIDemo.Controllers
             })
             .ToArray();
         }
-
         /// <summary>
         /// Reverses the input string.
         /// </summary>
@@ -68,5 +71,8 @@ namespace RestAPIDemo.Controllers
             var reversed = new string(input.Reverse().ToArray());
             return Ok(reversed);
         }
+        
+
+
     }
 }
