@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "dgSpecHash": "pWuRd6/VVGU=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\subod\\Source\\Repos\\subodhsohoni\\SSGSEMS\\DemoWebApp\\DemoWebApp\\WeatherForecastClient\\WeatherForecastClient.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\subod\\.nuget\\packages\\system.net.http.json\\9.0.9\\system.net.http.json.9.0.9.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1510",
+      "level": "Warning",
+      "message": "PackageReference System.Net.Http.Json will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "projectPath": "C:\\Users\\subod\\Source\\Repos\\subodhsohoni\\SSGSEMS\\DemoWebApp\\DemoWebApp\\WeatherForecastClient\\WeatherForecastClient.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\subod\\Source\\Repos\\subodhsohoni\\SSGSEMS\\DemoWebApp\\DemoWebApp\\WeatherForecastClient\\WeatherForecastClient.csproj",
+      "libraryId": "System.Net.Http.Json",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
+}

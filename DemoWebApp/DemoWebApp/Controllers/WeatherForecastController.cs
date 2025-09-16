@@ -1,65 +1,57 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
+using System.Security.Claims;
 
-namespace RestAPIDemo.Controllers
+namespace DemoWebApp.Controllers
 {
-    /// <summary>
-    /// Controller for providing weather forecast data and string utilities.
-    /// </summary>
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class WeatherForecastController : ControllerBase
     {
-        // Predefined weather summary descriptions.
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
-        // Replace this line:
-        // const DateTime current_time = DateTime.Now.ToLocalTime()
 
-        // With this line:
-        private static readonly DateTime current_time = DateTime.Now.ToLocalTime();
         private readonly ILogger<WeatherForecastController> _logger;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WeatherForecastController"/> class.
-        /// </summary>
-        /// <param name="logger">Logger instance for the controller.</param>
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
         }
 
         /// <summary>
-        /// Gets a collection of weather forecasts for the next five days.
+        /// Retrieves a collection of weather forecasts for the next five days.
         /// </summary>
-        /// <remarks>
-        /// Each forecast includes the date, temperature in Celsius, and a summary description.
-        /// </remarks>
-        /// <returns>
-        /// An <see cref="IEnumerable{WeatherForecast}"/> containing five weather forecast entries.
-        /// </returns>
+        /// <remarks>Each forecast includes the date, temperature in Celsius, temperature in Fahrenheit, 
+        /// and a summary description. The temperature values are randomly generated within a predefined range, and the
+        /// summary is selected randomly from a predefined set of options.</remarks>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="WeatherForecast"/> objects representing the weather forecasts
+        /// for the next five days.</returns>
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            return Enumerable.Range(1, 5).Select(index =>
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                var tempC = Random.Shared.Next(-20, 55);
+                return new WeatherForecast
+                {
+                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                    TemperatureC = tempC,
+                    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                };
             })
             .ToArray();
         }
+
         /// <summary>
         /// Reverses the input string.
         /// </summary>
         /// <param name="input">The string to reverse.</param>
         /// <returns>The reversed string.</returns>
-        /// <remarks>
-        /// Requires authentication via a valid authentication header.
-        /// </remarks>
-        [Authorize]
         [HttpPost("ReverseString")]
         public ActionResult<string> ReverseString([FromBody] string input)
         {
@@ -67,31 +59,32 @@ namespace RestAPIDemo.Controllers
             {
                 return BadRequest("Input string cannot be null or empty.");
             }
-
             var reversed = new string(input.Reverse().ToArray());
             return Ok(reversed);
         }
+
         /// <summary>
         /// Reverses the digits of the input integer.
         /// </summary>
         /// <param name="input">The integer to reverse.</param>
         /// <returns>The reversed integer as a string.</returns>
-        /// <remarks>
-        /// Requires authentication via a valid authentication header.
-        /// </remarks>
-        [Authorize]
         [HttpPost("ReverseInt")]
-        public ActionResult<string> ReverseInt([FromBody] int input)
+        public ActionResult<int> ReverseInt([FromBody] int input)
         {
-            // Handle negative numbers
             bool isNegative = input < 0;
             string digits = Math.Abs(input).ToString();
             string reversedDigits = new string(digits.Reverse().ToArray());
             string result = isNegative ? "-" + reversedDigits : reversedDigits;
-            int reversedInt = int.Parse(result);
-            return Ok(reversedInt);
+            if (int.TryParse(result, out int reversedInt))
+            {
+                return Ok(reversedInt);
+            }
+            return BadRequest("Reversed integer is out of range.");
         }
 
-
+        private string? GetUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
     }
 }
