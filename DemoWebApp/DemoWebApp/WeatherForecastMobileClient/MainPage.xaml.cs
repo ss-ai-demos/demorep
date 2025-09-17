@@ -9,15 +9,16 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
 	}
 
+	public static string GetCounterText(int count)
+	{
+		return count == 1 ? $"Clicked {count} time" : $"Clicked {count} times";
+	}
+
 	private void OnCounterClicked(object? sender, EventArgs e)
 	{
 		count++;
 
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
-
+		CounterBtn.Text = GetCounterText(count);
 		SemanticScreenReader.Announce(CounterBtn.Text);
 	}
 }

@@ -2,8 +2,11 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs
+.vs
 /RestAPIDemo/.vs/RestAPIDemo
 /RestAPIDemo/.vs/ProjectEvaluation
 /DemoWebApp/.vs
 /DemoWebApp/DemoWebApp/obj
+
+# Ignore all obj folders in the project
+**/obj/
